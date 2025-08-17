@@ -1,0 +1,46 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    depends_on:
+      - mysql
+      - redis
+    ports:
+      - 8080:8080
+    networks:
+      - book-app-network
+    
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: ram
+      MYSQL_PASSWORD: 1008
+      MYSQL_DATABASE: bookappdb
+    ports:
+      - "3307:3306"
+    networks:
+      - book-app-network
+    volumes:
+      - mysql-book-app-data:/var/lib/mysql
+    
+
+  redis:
+    image: redis
+    networks:
+      - book-app-network
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - 5173:80
+    networks:
+      - book-app-network
+
+networks:
+  book-app-network:
+    driver: bridge
+
+volumes:
+  mysql-book-app-data:
